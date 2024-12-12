@@ -1,20 +1,20 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class DashboardController extends Controller
+class UsuarioController extends Controller
 {
-    
-
-    public function dashboard() {
+    public function index()
+    {
         $usuarios = DB::select('SELECT * FROM usuarios');
-        return view('dashboard', compact('usuarios'));
+        return view('usuarios', compact('usuarios'));
     }
 
     public function editarUsuario($id) {
-        $usuario = DB::select('SELECT * FROM usuarios WHERE id = ?', [$id]);
+        $usuario = DB::selectOne('SELECT * FROM usuarios WHERE id = ?', [$id]);
         return view('editar_usuario', compact('usuario'));
     }
 
@@ -24,24 +24,22 @@ class DashboardController extends Controller
             'correo' => 'required|email',
         ]);
     
-        // Actualizar usuario
         DB::update('
             UPDATE usuarios 
-            SET nombre = ?, correo = ?, updated_at = ? 
+            SET nombre = ?, correo = ?
             WHERE id = ?
         ', [
             $request->nombre,
             $request->correo,
-            now(),
             $id,
         ]);
     
-        return redirect()->route('dashboard')->with('success', 'Usuario actualizado correctamente.');
+        return redirect()->route('usuarios.index')->with('success', 'Usuario actualizado correctamente.');
     }
 
     public function eliminarUsuario($id) {
         DB::delete('DELETE FROM usuarios WHERE id = ?', [$id]);
-        return redirect()->route('dashboard')->with('success', 'Usuario eliminado correctamente.');
+        return redirect()->route('usuarios.index')->with('success', 'Usuario eliminado correctamente.');
     }
 
     public function storeUsuario(Request $request)
@@ -54,17 +52,13 @@ class DashboardController extends Controller
         ]);
 
         DB::insert('
-            INSERT INTO usuarios (nombre, correo, telefono, direccion, created_at, updated_at)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT INTO usuarios (nombre, correo)
+            VALUES (?, ?)
         ', [
             $validated['nombre'],
             $validated['correo'],
-            $validated['telefono'] ?? null, 
-            $validated['direccion'] ?? null,
-            now(),  
-            now(),
         ]);
 
-        return redirect()->route('dashboard')->with('success', 'Usuario creado correctamente.');
+        return redirect()->route('usuarios.index')->with('success', 'Usuario creado correctamente.');
     }
 }

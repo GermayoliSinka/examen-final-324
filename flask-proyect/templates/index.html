@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Tareas</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1 class="my-4">Sistema de Tareas</h1>
+
+        <button class="btn btn-primary mb-4" data-toggle="modal" data-target="#createEditTareaModal" data-action="crear">Agregar Nueva Tarea</button>
+        <button class="btn btn-secondary mb-4" data-toggle="modal" data-target="#createEditUsuarioModal" data-action="crear">Agregar Nuevo Usuario</button>
+
+        <h2>Tareas</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Descripción</th>
+                    <th>Usuario</th>
+                    <th>Estado</th>
+                    <th>Prioridad</th>
+                    <th>Fecha Límite</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tarea in tareas %}
+                    <tr>
+                        <td>{{ tarea.id }}</td>
+                        <td>{{ tarea.descripcion }}</td>
+                        <td>{{ tarea.usuario }}</td>
+                        <td>{{ tarea.estado }}</td>
+                        <td>{{ tarea.prioridad }}</td>
+                        <td>{{ tarea.fecha_limite }}</td>
+                        <td>
+                            <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#createEditTareaModal" data-action="editar" data-tarea-id="{{ tarea.id }}" data-tarea-descripcion="{{ tarea.descripcion }}" data-tarea-usuario="{{ tarea.usuario }}" data-tarea-estado="{{ tarea.estado }}" data-tarea-prioridad="{{ tarea.prioridad }}" data-tarea-fecha="{{ tarea.fecha_limite }}">Editar</button>
+                            <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#confirmDeleteModal" data-tarea-id="{{ tarea.id }}" data-tarea-descripcion="{{ tarea.descripcion }}">Eliminar</button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h2>Usuarios</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for usuario in usuarios %}
+                    <tr>
+                        <td>{{ usuario.id }}</td>
+                        <td>{{ usuario.nombre }}</td>
+                        <td>{{ usuario.correo }}</td>
+                        <td>
+                            <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#createEditUsuarioModal" data-action="editar" data-usuario-id="{{ usuario.id }}" data-usuario-nombre="{{ usuario.nombre }}" data-usuario-correo="{{ usuario.correo }}">Editar</button>
+                            <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#confirmDeleteModal" data-usuario-id="{{ usuario.id }}" data-usuario-nombre="{{ usuario.nombre }}">Eliminar</button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="modal fade" id="createEditTareaModal" tabindex="-1" role="dialog" aria-labelledby="createEditTareaModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createEditTareaModalLabel">Agregar Nueva Tarea</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="tareaForm" action="#" method="POST">
+                        <div class="form-group">
+                            <label for="descripcionTarea">Descripción</label>
+                            <input type="text" class="form-control" id="descripcionTarea" name="descripcion" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="usuarioTarea">Usuario</label>
+                            <input type="text" class="form-control" id="usuarioTarea" name="usuario" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="estadoTarea">Estado</label>
+                            <input type="text" class="form-control" id="estadoTarea" name="estado" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="prioridadTarea">Prioridad</label>
+                            <input type="text" class="form-control" id="prioridadTarea" name="prioridad" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="fechaLimiteTarea">Fecha Límite</label>
+                            <input type="date" class="form-control" id="fechaLimiteTarea" name="fecha_limite" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal crear / editar -->
+    <div class="modal fade" id="createEditUsuarioModal" tabindex="-1" role="dialog" aria-labelledby="createEditUsuarioModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createEditUsuarioModalLabel">Agregar Nuevo Usuario</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="usuarioForm" action="#" method="POST">
+                        <div class="form-group">
+                            <label for="nombreUsuario">Nombre</label>
+                            <input type="text" class="form-control" id="nombreUsuario" name="nombre" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="correoUsuario">Correo</label>
+                            <input type="email" class="form-control" id="correoUsuario" name="correo" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal eliminacion -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Eliminación</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    ¿Estás seguro de que deseas eliminar este elemento?
+                    <p id="deleteItemDescription"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <a href="#" id="deleteConfirmBtn" class="btn btn-danger">Eliminar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $('#createEditTareaModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var action = button.data('action');
+            var modal = $(this);
+            modal.find('.modal-title').text(action === 'crear' ? 'Agregar Nueva Tarea' : 'Editar Tarea');
+
+            if (action === 'editar') {
+                modal.find('#descripcionTarea').val(button.data('tarea-descripcion'));
+                modal.find('#usuarioTarea').val(button.data('tarea-usuario'));
+                modal.find('#estadoTarea').val(button.data('tarea-estado'));
+                modal.find('#prioridadTarea').val(button.data('tarea-prioridad'));
+                modal.find('#fechaLimiteTarea').val(button.data('tarea-fecha'));
+                modal.find('#tareaForm').attr('action', '/editarTarea/' + button.data('tarea-id'));
+            } else {
+                modal.find('#tareaForm').attr('action', '/crearTarea');
+            }
+        });
+
+        $('#createEditUsuarioModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var action = button.data('action');
+            var modal = $(this);
+            modal.find('.modal-title').text(action === 'crear' ? 'Agregar Nuevo Usuario' : 'Editar Usuario');
+
+            if (action === 'editar') {
+                modal.find('#nombreUsuario').val(button.data('usuario-nombre'));
+                modal.find('#correoUsuario').val(button.data('usuario-correo'));
+                modal.find('#usuarioForm').attr('action', '/editarUsuario/' + button.data('usuario-id'));
+            } else {
+                modal.find('#usuarioForm').attr('action', '/crearUsuario');
+            }
+        });
+
+        $('#confirmDeleteModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var modal = $(this);
+
+            if (button.data('tarea-id')) {
+                modal.find('#deleteItemDescription').text('Tarea: ' + button.data('tarea-descripcion'));
+                modal.find('#deleteConfirmBtn').attr('href', '/eliminarTarea/' + button.data('tarea-id'));
+            } else if (button.data('usuario-id')) {
+                modal.find('#deleteItemDescription').text('Usuario: ' + button.data('usuario-nombre'));
+                modal.find('#deleteConfirmBtn').attr('href', '/eliminarUsuario/' + button.data('usuario-id'));
+            }
+        });
+    </script>
+</body>
+</html>

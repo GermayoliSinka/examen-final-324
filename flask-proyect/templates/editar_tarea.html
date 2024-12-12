@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ 'Editar' if tarea else 'Nueva' }} Tarea</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>{{ 'Editar' if tarea else 'Nueva' }} Tarea</h1>
+        <form method="POST">
+            <div class="form-group">
+                <label for="descripcion">Descripción</label>
+                <input type="text" class="form-control" id="descripcion" name="descripcion" value="{{ tarea.descripcion if tarea else '' }}" required>
+            </div>
+            <div class="form-group">
+                <label for="usuario_id">Usuario</label>
+                <select class="form-control" id="usuario_id" name="usuario_id" required>
+                    {% if usuarios %}
+                        {% for usuario in usuarios %}
+                            <option value="{{ usuario.id }}" {% if tarea and tarea.usuario_id == usuario.id %}selected{% endif %}>{{ usuario.nombre }}</option>
+                        {% endfor %}
+                    {% else %}
+                        <option disabled>No hay usuarios disponibles</option>
+                    {% endif %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="estado_id">Estado</label>
+                <select class="form-control" id="estado_id" name="estado_id" required>
+                    {% if estados %}
+                        {% for estado in estados %}
+                            <option value="{{ estado.id }}" {% if tarea and tarea.estado_id == estado.id %}selected{% endif %}>{{ estado.nombre }}</option>
+                        {% endfor %}
+                    {% else %}
+                        <option disabled>No hay estados disponibles</option>
+                    {% endif %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="prioridad_id">Prioridad</label>
+                <select class="form-control" id="prioridad_id" name="prioridad_id" required>
+                    {% if prioridades %}
+                        {% for prioridad in prioridades %}
+                            <option value="{{ prioridad.id }}" {% if tarea and tarea.prioridad_id == prioridad.id %}selected{% endif %}>{{ prioridad.nombre }}</option>
+                        {% endfor %}
+                    {% else %}
+                        <option disabled>No hay prioridades disponibles</option>
+                    {% endif %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="fecha_limite">Fecha Límite</label>
+                <input type="date" class="form-control" id="fecha_limite" name="fecha_limite" value="{{ tarea.fecha_limite if tarea else '' }}" required>
+            </div>
+            <button type="submit" class="btn btn-primary">{{ 'Actualizar' if tarea else 'Crear' }}</button>
+        </form>
+    </div>
+</body>
+</html>
